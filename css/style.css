@@ -6844,6 +6844,8 @@ a.toc-link {
 .footer .outer>ul {
   position: relative;
   display: flex;
+  width: 230px;
+  margin: auto;
   justify-content: space-between;
 }
 .footer .outer>ul:first-child {
