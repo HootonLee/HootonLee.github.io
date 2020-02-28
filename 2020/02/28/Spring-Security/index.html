@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    Spring_Secutity |  HootonLee | 李士宁的个人博客
+  </title>
+  <meta name="generator" content="hexo-theme-yilia-plus">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/HootonLee.github.io/css/style.css">
+
+  
+<script src="/HootonLee.github.io/js/pace.min.js"></script>
+
+
+  
+
+
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content">
+      <section class="outer">
+  <article id="post-Spring-Security" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Spring_Secutity
+</h1>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/HootonLee.github.io/2020/02/28/Spring-Security/" class="article-date">
+  <time datetime="2020-02-28T15:08:28.000Z" itemprop="datePublished">2020-02-28</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/HootonLee.github.io/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/">技术分享</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">1.6k字</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">7分钟</span>
+        </span>
+    </span>
+</div>
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h1 id="一-Spring-Security介绍"><a href="#一-Spring-Security介绍" class="headerlink" title="一. Spring Security介绍"></a>一. Spring Security介绍</h1><p>Spring Security是一个功能强大且高度可定制的身份验证和访问控制框架。它是用于保护基于Spring的应用程序的实际标准。</p>
+<p>Spring Security是一个框架，致力于为Java应用程序提供身份验证和授权。与所有Spring项目一样，Spring Security的真正强大之处在于可以轻松扩展以满足自定义要求</p>
+<p>这是<a href="https://spring.io/projects/spring-security" target="_blank" rel="noopener">Spring Security官方</a>给出的解释，，通俗点概括三点：</p>
+<ul>
+<li>认证（你是谁？）</li>
+<li>授权（你能干些什么？）</li>
+<li>防护攻击（防止    请求伪造）</li>
+</ul>
+<p><strong>Doc</strong> ：<a href="https://docs.spring.io/spring-security/site/docs/5.2.2.RELEASE/reference/htmlsingle/" target="_blank" rel="noopener">Spring Security Reference Doc.</a></p>
+<p>你可能感兴趣的传送门：<br><a href="https://blog.csdn.net/weixin_45942815/article/details/104503676" target="_blank" rel="noopener">SpringBoot整合Mybatis和Druid数据源</a><br><a href="https://blog.csdn.net/weixin_45942815/article/details/104450693" target="_blank" rel="noopener">Swagger简介和使用</a><br><a href="https://blog.csdn.net/weixin_45942815/article/details/104554277" target="_blank" rel="noopener">Hexo+Nodejs+git快速搭建个人博客</a></p>
+<hr>
+<h1 id="二-Hello-Web-Security-Java-Configuration"><a href="#二-Hello-Web-Security-Java-Configuration" class="headerlink" title="二. Hello Web Security Java Configuration"></a>二. Hello Web Security Java Configuration</h1><h6 id="1-创建一个SpringBoot项目"><a href="#1-创建一个SpringBoot项目" class="headerlink" title="1. 创建一个SpringBoot项目"></a>1. 创建一个SpringBoot项目</h6><p>创建时导入依赖：</p>
+<p>Web -&gt; Spring Web<br>Security -&gt; Spring Security </p>
+<p>需要去Maven远程仓库找到security和thymeleaf整合的坐标</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- security - thymeleaf 整合包--&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.thymeleaf.extras<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>thymeleaf-extras-springsecurity4<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.0.4.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h6 id="2-创建SecurityConfig类"><a href="#2-创建SecurityConfig类" class="headerlink" title="2. 创建SecurityConfig类"></a>2. 创建SecurityConfig类</h6><p>官方文档中最简单的方式，，</p>
+<ol>
+<li>只需要继承WebSecurityConfigurerAdapter，</li>
+<li>加上@EnableWebSecurity注解</li>
+<li>重写 configure(HttpSecurity http) 这个方法<br><img src="https://img-blog.csdnimg.cn/20200228220026744.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTk0MjgxNQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><h6 id="3-重写-configure-HttpSecurity-http-实现授权"><a href="#3-重写-configure-HttpSecurity-http-实现授权" class="headerlink" title="3. 重写 configure(HttpSecurity http) 实现授权"></a>3. 重写 configure(HttpSecurity http) 实现授权</h6></li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// 授权</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(HttpSecurity http)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="comment">// 首页所有人可以访问，功能页只有对应有权限的人才能访问</span></span><br><span class="line">    <span class="comment">// 请求授权的规则</span></span><br><span class="line">    http.authorizeRequests()</span><br><span class="line">            .antMatchers(<span class="string">"/"</span>).permitAll()</span><br><span class="line">            .antMatchers(<span class="string">"/level1/**"</span>).hasRole(<span class="string">"vp1"</span>) <span class="comment">// 是指/level1 下所有的页面角色有 vp1 才能访问</span></span><br><span class="line">            .antMatchers(<span class="string">"/level2/**"</span>).hasRole(<span class="string">"vp2"</span>)</span><br><span class="line">            .antMatchers(<span class="string">"/level3/**"</span>).hasRole(<span class="string">"vp3"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 没有权限默认会到登录页面  /login</span></span><br><span class="line">    <span class="comment">// 定制登录页面 自定义接收前端username，password属性值</span></span><br><span class="line">    http.formLogin().loginPage(<span class="string">"/toLogin"</span>)</span><br><span class="line">            .usernameParameter(<span class="string">"user"</span>).passwordParameter(<span class="string">"pwd"</span>).loginProcessingUrl(<span class="string">"/login"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 注销  .logout().deleteCookies("remove").invalidateHttpSession(true) 默认false 用于删除Cookies和Session</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 防止网站攻击 请求/logout是 get , 可以在页面变为post，但需要表单</span></span><br><span class="line">    <span class="comment">// csrf ： 跨站请求伪造 get种的请求网站受到攻击 默认是开启的功能</span></span><br><span class="line">    </span><br><span class="line">    http.csrf().disable();</span><br><span class="line">    http.logout().logoutSuccessUrl(<span class="string">"/"</span>); <span class="comment">// 登出成功跳转到首页</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 开启记住我功能 Cookie，默认保存时间 两周</span></span><br><span class="line">    <span class="comment">// 自定义接收前端的属性值</span></span><br><span class="line">    http.rememberMe().rememberMeParameter(<span class="string">"remember"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h6 id="4-重写-configure-AuthenticationManagerBuilder-auth-实现认证"><a href="#4-重写-configure-AuthenticationManagerBuilder-auth-实现认证" class="headerlink" title="4. 重写 configure(AuthenticationManagerBuilder auth)  实现认证"></a>4. 重写 configure(AuthenticationManagerBuilder auth)  实现认证</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// 认证  springboot 2.1.x 可以直接使用</span></span><br><span class="line"><span class="comment">// 密码编码：PasswordEncoder</span></span><br><span class="line"><span class="comment">// 在Spring Security 5.0+ 增加了很多加密的方法</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(AuthenticationManagerBuilder auth)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="comment">// jdbc认证从数据库 jdbcAuthentication()</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 这些数据应该从数据库中读取</span></span><br><span class="line">    <span class="comment">// 模拟在内存中拟造一个用户  可以使用.and() 拼接多个用户</span></span><br><span class="line">    auth.inMemoryAuthentication().passwordEncoder(<span class="keyword">new</span> BCryptPasswordEncoder())</span><br><span class="line">            .withUser(<span class="string">"hooton"</span>).password(<span class="keyword">new</span> BCryptPasswordEncoder().encode(<span class="string">"1234"</span>)).roles(<span class="string">"vp2"</span>,<span class="string">"vp3"</span>)</span><br><span class="line">            .and()</span><br><span class="line">            .withUser(<span class="string">"root"</span>).password(<span class="keyword">new</span> BCryptPasswordEncoder().encode(<span class="string">"1234"</span>)).roles(<span class="string">"vp1"</span>,<span class="string">"vp2"</span>,<span class="string">"vp3"</span>)</span><br><span class="line">            .and()</span><br><span class="line">            .withUser(<span class="string">"guest"</span>).password(<span class="keyword">new</span> BCryptPasswordEncoder().encode(<span class="string">"1234"</span>)).roles(<span class="string">"vp1"</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="三-前端页面的简略书写和讲解"><a href="#三-前端页面的简略书写和讲解" class="headerlink" title="三. 前端页面的简略书写和讲解"></a>三. 前端页面的简略书写和讲解</h1><h6 id="1-HTML配置"><a href="#1-HTML配置" class="headerlink" title="1. HTML配置"></a>1. HTML配置</h6><p>要在html标签里加入</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span> </span></span><br><span class="line"><span class="tag"></span></span><br><span class="line"><span class="tag"><span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span></span></span><br><span class="line"><span class="tag"></span></span><br><span class="line"><span class="tag"><span class="attr">xmlns:sec</span>=<span class="string">"http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>粗略的说一说前端页面</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 如果未登录 显示 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">sec:authorize</span>=<span class="string">"!isAuthenticated()"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">class</span>=<span class="string">"item"</span> <span class="attr">th:href</span>=<span class="string">"@&#123;/toLogin&#125;"</span>&gt;</span> </span><br><span class="line">		<span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"address card icon"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span> 登录</span><br><span class="line">    <span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--如果登录 显示 --&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 不知道问什么 sec:authentication="principal.getAuthorities()" 不行可能是不支持？--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">sec:authorize</span>=<span class="string">"isAuthenticated()"</span>&gt;</span></span><br><span class="line">     用户名：<span class="tag">&lt;<span class="name">span</span> <span class="attr">sec:authentication</span>=<span class="string">"name"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">     角色：<span class="tag">&lt;<span class="name">span</span> <span class="attr">sec:authentication</span>=<span class="string">"principal.getAuthorities()"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">sec:authorize</span>=<span class="string">"isAuthenticated()"</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">a</span> <span class="attr">class</span>=<span class="string">"item"</span> <span class="attr">th:href</span>=<span class="string">"@&#123;/logout&#125;"</span>&gt;</span> </span><br><span class="line">		<span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"sign-out icon"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span> 注销</span><br><span class="line">     <span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h6 id="2-页面的-sec：未生效原因"><a href="#2-页面的-sec：未生效原因" class="headerlink" title="2. 页面的 sec：未生效原因"></a>2. 页面的 sec：未生效原因</h6><p>造成的原因是</p>
+<p>如果使用 thymeleaf-security整合<br>可能是springboot的版本太高了 最最低支持的版本是2.0.9  网上一般介绍使使用2.0.7<br>降低2.0.9之后页面会变得丑，不怎么好看</p>
+<h6 id="3-也可以根据用户角色动态生成菜单等"><a href="#3-也可以根据用户角色动态生成菜单等" class="headerlink" title="3. 也可以根据用户角色动态生成菜单等"></a>3. 也可以根据用户角色动态生成菜单等</h6><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 菜单根据用户角色动态实现 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">sec:authorize</span>=<span class="string">"hasRole('vp1')"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"content"</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">h5</span>&gt;</span>Level 1<span class="tag">&lt;/<span class="name">h5</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">hr</span> /&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">th:href</span>=<span class="string">"@&#123;/level1/1&#125;"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"bullhorn icon"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span>Level-1-1<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">th:href</span>=<span class="string">"@&#123;/level1/1&#125;"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"bullhorn icon"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span>Level-1-2<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">th:href</span>=<span class="string">"@&#123;/level1/1&#125;"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"bullhorn icon"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span>Level-1-3<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">sec:authorize</span>=<span class="string">"hasRole('vp2')"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"content"</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">h5</span>&gt;</span>Level 2<span class="tag">&lt;/<span class="name">h5</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">hr</span> /&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">th:href</span>=<span class="string">"@&#123;/level2/1&#125;"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"bullhorn icon"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span>Level-2-1<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">th:href</span>=<span class="string">"@&#123;/level2/1&#125;"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"bullhorn icon"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span>Level-2-2<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">th:href</span>=<span class="string">"@&#123;/level2/1&#125;"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"bullhorn icon"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span>Level-2-3<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">sec:authorize</span>=<span class="string">"hasRole('vp3')"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"content"</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">h5</span>&gt;</span>Level 3<span class="tag">&lt;/<span class="name">h5</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">hr</span> /&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">th:href</span>=<span class="string">"@&#123;/level3/1&#125;"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"bullhorn icon"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span>Level-3-1<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">th:href</span>=<span class="string">"@&#123;/level3/1&#125;"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"bullhorn icon"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span>Level-3-2<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">th:href</span>=<span class="string">"@&#123;/level3/1&#125;"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"bullhorn icon"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span>Level-3-3<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="四-最后将一下前端页面和后台标签属性值不匹配问题"><a href="#四-最后将一下前端页面和后台标签属性值不匹配问题" class="headerlink" title="四. 最后将一下前端页面和后台标签属性值不匹配问题"></a>四. 最后将一下前端页面和后台标签属性值不匹配问题</h1><h6 id="1-登录页面的表单"><a href="#1-登录页面的表单" class="headerlink" title="1. 登录页面的表单"></a>1. 登录页面的表单</h6><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">th:action</span>=<span class="string">"@&#123;/toLogin&#125;"</span> <span class="attr">method</span>=<span class="string">"post"</span>&gt;</span></span><br><span class="line">Username: <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">placehloder</span>=<span class="string">"Username"</span> <span class="attr">name</span>=<span class="string">"user"</span>&gt;</span></span><br><span class="line">Password: <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"password"</span> <span class="attr">placehloder</span>=<span class="string">"Password"</span> <span class="attr">name</span>=<span class="string">"pwd"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>这里的 th：action 如果和后台 http.formLogin().loginPage(“/toLogin”) 一致的话没有问题。。。<br>如果action请求的地址写成 /login，那么后台就必须添加一个.loginProcessingUrl(“/login”)，，，如果使用了这种 会有更多的坑等着你</strong></p>
+<hr>
+<h6 id="2-表单-用户名和密码框-name属性值不是username和password"><a href="#2-表单-用户名和密码框-name属性值不是username和password" class="headerlink" title="2. 表单 用户名和密码框 name属性值不是username和password"></a>2. 表单 用户名和密码框 name属性值不是username和password</h6><p>前端表单用户名密码等input的name属性是username和password还可以 ，如果使用的是user和pwd等或者别的值得情况就不能接收<br>可以在后台添加 <strong>.usernameParameter(“user”).passwordParameter(“pwd”)</strong> 即可解决<br>前端页面如果有 <strong>checkbox 记住我</strong> 按钮的name属性值  可以在后台添加 <strong>.rememberMeParameter(“remember”)</strong>  默认的好像就是remember</p>
+
+      
+      <!-- reward -->
+      
+      <div id="reward-btn">
+        打赏
+      </div>
+      
+    </div>
+    
+    
+      <!-- copyright -->
+      
+        <div class="declare">
+          <ul class="post-copyright">
+            <li>
+              <i class="ri-copyright-line"></i>
+              <strong>版权声明： </strong s>
+              本博客所有文章除特别声明外，均采用 <a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="external nofollow"
+                target="_blank">Apache License 2.0</a> 许可协议。转载请注明出处！
+            </li>
+          </ul>
+        </div>
+        
+    <footer class="article-footer">
+      
+          
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://hootonlee.github.io/HootonLee.github.io/2020/02/28/Spring-Security/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>
+      
+      
+  
+
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+    
+      <a href="/HootonLee.github.io/2020/02/27/23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">23种设计模式之创建型</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+  
+<!-- valine评论 -->
+<div id="vcomments-box">
+    <div id="vcomments">
+    </div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        app_id: '',
+        app_key: '',
+        path: window.location.pathname,
+        notify: 'false',
+        verify: 'false',
+        avatar: 'mp',
+        placeholder: '给我的文章加点评论吧~',
+        recordIP: true
+    });
+    const infoEle = document.querySelector('#vcomments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+        infoEle.childNodes.forEach(function (item) {
+            item.parentNode.removeChild(item);
+        });
+    }
+</script>
+<style>
+    #vcomments-box {
+        padding: 5px 30px;
+    }
+
+    @media screen and (max-width: 800px) {
+        #vcomments-box {
+            padding: 5px 0px;
+        }
+    }
+
+    #vcomments-box #vcomments {
+        background-color: #fff;
+    }
+
+    .v .vlist .vcard .vh {
+        padding-right: 20px;
+    }
+
+    .v .vlist .vcard {
+        padding-left: 10px;
+    }
+</style>
+
+  
+
+  
+  
+  
+
+</article>
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        Copyright&nbsp;&copy;
+        <b>HootonLee</b>
+        2019-2020
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+          Powered by
+        
+        
+        <a href="https://hexo.io" target="_blank">Hexo</a> Theme by <a href="#" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+    <aside class="sidebar">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/HootonLee.github.io/"><img src="/images/ayer-side.svg" alt="HootonLee | 李士宁的个人博客"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/HootonLee.github.io/">Home</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/HootonLee.github.io/archives">Archives</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/HootonLee.github.io/categories">Genres</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/HootonLee.github.io/tags">Tags</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/HootonLee.github.io/about">About</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank"  title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/HootonLee.github.io/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/HootonLee.github.io/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/HootonLee.github.io/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/HootonLee.github.io/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/HootonLee.github.io/js/lazyload.min.js"></script>
+
+
+<script src="/HootonLee.github.io/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<script src="/HootonLee.github.io/js/share.js"></script>
+
+
+
+<script src="/HootonLee.github.io/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script>
+  try {
+    var typed = new Typed("#subtitle", {
+    strings: ['学无前后，达者为先','愿你一生努力，一生被爱',''],
+    startDelay: 0,
+    typeSpeed: 200,
+    loop: true,
+    backSpeed: 100,
+    showCursor: true
+    });
+  } catch (err) {
+  }
+  
+</script>
+
+
+
+
+<script src="/HootonLee.github.io/js/tocbot.min.js"></script>
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer:'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+    onClick: (e) => {
+      $('.toc-link').removeClass('is-active-link');
+      $(`a[href=${e.target.hash}]`).addClass('is-active-link');
+      $(e.target.hash).scrollIntoView();
+      return false;
+    }
+  });
+</script>
+
+
+<script>
+  var ayerConfig = {
+    mathjax: false
+  }
+</script>
+
+
+<script src="/HootonLee.github.io/js/ayer.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+
+    
+    <div id="music">
+    
+    
+    
+    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
+        src="//music.163.com/outchain/player?type=2&id=1386726633&auto=0&height=32"></iframe>
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+  </div>
+</body>
+
+</html>
